@@ -1,7 +1,10 @@
 ## 1.0.0-0
 Describe initial release.
 
-## 1.0.0-1
+## 1.0.0-2
+Minor Bugs Fixed
+
+## 1.0.0-2
 The following APIs are added related to Printer.
 1.	initPrinter() 
 2.	closePrinter()
