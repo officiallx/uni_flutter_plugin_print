@@ -1,4 +1,4 @@
-package com.example.uni_flutter_plugin;
+package com.evolute.uni_flutter_plugin.service;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -11,12 +11,9 @@ import android.util.Log;
 
 import com.evolute.printservice.AidlPrint;
 import com.evolute.sdkservice.ESDKConstant;
+import com.evolute.uni_flutter_plugin.utility.Utility;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -48,7 +45,7 @@ public class PrinterService {
     }
 
 
-    void initPrinter(MethodChannel.Result result) {
+    public void initPrinter(MethodChannel.Result result) {
         if (aidlPrint == null) {
             Intent intent = new Intent();
             intent.setAction("com.evolute.service.printservice");
@@ -76,7 +73,7 @@ public class PrinterService {
         }
     }
 
-    int printLine(int line) {
+    public int printLine(int line) {
         try {
             aidlPrint.printLine(line);
             return ESDKConstant.PRINTER_SUCCESS;
@@ -86,7 +83,7 @@ public class PrinterService {
         }
     }
 
-    int iFlushBuffer() {
+    public int iFlushBuffer() {
         try {
             int ret = aidlPrint.iFlushBuffer();
             return ret;
@@ -96,7 +93,7 @@ public class PrinterService {
         }
     }
 
-    int checkPaper() {
+    public int checkPaper() {
         try {
             boolean status = aidlPrint.checkPaper();
             return status ? 1 : 0;
@@ -106,7 +103,7 @@ public class PrinterService {
         }
     }
 
-    int iStartPrinting() {
+    public int iStartPrinting() {
         try {
             int ret = aidlPrint.iStartPrinting();
             return ret;
@@ -116,7 +113,7 @@ public class PrinterService {
         }
     }
 
-    int iGetPrinterStatus() {
+    public int iGetPrinterStatus() {
         try {
             int ret = aidlPrint.iGetPrinterStatus();
             return ret;
@@ -126,7 +123,7 @@ public class PrinterService {
         }
     }
 
-    int setLogEnable(boolean enable) {
+    public int setLogEnable(boolean enable) {
         try {
             aidlPrint.vSetLogEnable(enable);
             return ESDKConstant.PRINTER_SUCCESS;
@@ -136,7 +133,7 @@ public class PrinterService {
         }
     }
 
-    String getVersion() {
+    public String getVersion() {
         try {
             String ret = aidlPrint.getVersion();
             return ret;
@@ -146,7 +143,7 @@ public class PrinterService {
         }
     }
 
-    int iSetPrinterProperties(int fontSize, int textAlignment) {
+    public int iSetPrinterProperties(int fontSize, int textAlignment) {
         try {
             int ret = aidlPrint.iSetPrinterProperties(ESDKConstant.FontSize.valueOf(fontSize), ESDKConstant.TextAlignment.valueOf(textAlignment));
             return ret;
@@ -156,7 +153,7 @@ public class PrinterService {
         }
     }
 
-    int printQRCode(String data) {
+    public int printQRCode(String data) {
         try {
             int ret = aidlPrint.printQRCode(data);
             return ret;
@@ -166,7 +163,7 @@ public class PrinterService {
         }
     }
 
-    int printQRCode(String data, int width) {
+    public int printQRCode(String data, int width) {
         try {
             int ret = aidlPrint.printQRCode(data, width);
             return ret;
@@ -176,7 +173,7 @@ public class PrinterService {
         }
     }
 
-    int printQRCode(String data, int width, int imageAlignment) {
+    public int printQRCode(String data, int width, int imageAlignment) {
         try {
             int ret = aidlPrint.printQRCode(data, width, imageAlignment);
             return ret;
@@ -186,9 +183,9 @@ public class PrinterService {
         }
     }
 
-    int sendRawData(ArrayList<Integer> data) {
+    public int sendRawData(ArrayList<Integer> data) {
         try {
-            byte[] byteData = arrayListToByteArray(data);
+            byte[] byteData = Utility.arrayListToByteArray(data);
             aidlPrint.sendRAWData(byteData);
             return ESDKConstant.PRINTER_SUCCESS;
         } catch (Exception e) {
@@ -197,7 +194,7 @@ public class PrinterService {
         }
     }
 
-    int iUpdatedBuffer(String data) {
+    public int iUpdatedBuffer(String data) {
         try {
             int ret = aidlPrint.iUpdateBuffer(data);
             return ret;
@@ -208,9 +205,9 @@ public class PrinterService {
     }
 
 
-    int iUpdatedBuffer(ArrayList<Integer> data) {
+    public int iUpdatedBuffer(ArrayList<Integer> data) {
         try {
-            byte[] byteData = arrayListToByteArray(data);
+            byte[] byteData = Utility.arrayListToByteArray(data);
             int ret = aidlPrint.iUpdateBuffer(byteData);
             return ret;
         } catch (Exception e) {
@@ -219,7 +216,7 @@ public class PrinterService {
         }
     }
 
-    int iPrintEANBarcode(String data, int height) {
+    public int iPrintEANBarcode(String data, int height) {
         try {
             int ret = aidlPrint.iPrintEAN_Barcode(data, height);
             return ret;
@@ -229,7 +226,7 @@ public class PrinterService {
         }
     }
 
-    int iUpdatedBufferFontSize(int fontSize) {
+    public int iUpdatedBufferFontSize(int fontSize) {
         try {
             int ret = aidlPrint.iUpdateBuffer(ESDKConstant.FontSize.valueOf(fontSize));
             return ret;
@@ -240,7 +237,7 @@ public class PrinterService {
     }
 
 
-    int iUpdatedBufferTextAlignment(int textAlignment) {
+    public int iUpdatedBufferTextAlignment(int textAlignment) {
         try {
             int ret = aidlPrint.iUpdateBuffer(ESDKConstant.TextAlignment.valueOf(textAlignment));
             return ret;
@@ -250,7 +247,7 @@ public class PrinterService {
         }
     }
 
-    int printText(String data) {
+    public int printText(String data) {
         try {
             aidlPrint.printText(data);
             return ESDKConstant.PRINTER_SUCCESS;
@@ -261,9 +258,9 @@ public class PrinterService {
     }
 
 
-    int printImg(ArrayList<Integer> data) {
+    public int printImg(ArrayList<Integer> data) {
         try {
-            byte[] byteData = arrayListToByteArray(data);
+            byte[] byteData = Utility.arrayListToByteArray(data);
             Bitmap bitmap = BitmapFactory.decodeByteArray(byteData, 0, byteData.length);
             aidlPrint.printImg(bitmap);
             return ESDKConstant.PRINTER_SUCCESS;
@@ -274,19 +271,13 @@ public class PrinterService {
         }
     }
 
-    int closePrinter() {
-        Log.e(TAG, "closePrinter: Printer Closed");
-        context.unbindService(printerServiceConnection);
-        aidlPrint = null;
+    public int closePrinter() {
+        if (aidlPrint != null) {
+            Log.e(TAG, "closePrinter: Printer Closed");
+            context.unbindService(printerServiceConnection);
+            aidlPrint = null;
+        }
         return ESDKConstant.PRINTER_SUCCESS;
     }
 
-    private byte[] arrayListToByteArray(ArrayList<Integer> data) throws IOException {
-        ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
-        DataOutputStream out = new DataOutputStream(byteOut);
-        for (int element : data) {
-            out.write(element);
-        }
-        return byteOut.toByteArray();
-    }
 }

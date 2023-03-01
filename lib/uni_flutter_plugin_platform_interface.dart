@@ -1,8 +1,14 @@
 import 'dart:typed_data';
 
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
+import 'package:uni_flutter_plugin/fps/sensor_response.dart';
 import 'package:uni_flutter_plugin/printer/printer_constants.dart';
 
+import 'fps/fps_constants.dart';
+import 'fps/fps_device_info.dart';
+import 'fps/sensor_verify_image_response.dart';
+import 'fps/sensor_verify_response.dart';
+import 'fps/template_data.dart';
 import 'uni_flutter_plugin_method_channel.dart';
 
 abstract class UniFlutterPluginPlatform extends PlatformInterface {
@@ -26,6 +32,7 @@ abstract class UniFlutterPluginPlatform extends PlatformInterface {
     _instance = instance;
   }
 
+  //***********************************PRINTER APIS********************************************
   Future<int> initPrinter() {
     throw UnimplementedError('initPrinter() has not been implemented.');
   }
@@ -106,5 +113,88 @@ abstract class UniFlutterPluginPlatform extends PlatformInterface {
 
   Future<int> setLogEnable(bool status) {
     throw UnimplementedError("setLogEnable() has not been implemented.");
+  }
+
+//*************************FPS APIS**************************************************************
+
+  Future<int> initFPS() {
+    throw UnimplementedError("initFPS() has not been implemented.");
+  }
+
+  Future<int> closeFPS() {
+    throw UnimplementedError("closeFPS() has not been implemented.");
+  }
+
+  Future<SensorResponse> captureFPS() {
+    throw UnimplementedError("captureFPS() has not been implemented.");
+  }
+
+  Future<int> setTemplate(TemplateType templateType) {
+    throw UnimplementedError("setTemplate() has not been implemented.");
+  }
+
+  Future<int> getTemplate() {
+    throw UnimplementedError("getTemplate() has not been implemented.");
+  }
+
+  Future<int> setImgCompressionAlgo(ImageCompressionType imageCompressionType) {
+    throw UnimplementedError(
+        "setImgCompressionAlgo() has not been implemented.");
+  }
+
+  Future<int> getImageCompressionAlgo() {
+    throw UnimplementedError(
+        "getImageCompressionAlgo() has not been implemented.");
+  }
+
+  Future<int> setTimeout(int timeout) {
+    throw UnimplementedError("setTimeout() has not been implemented.");
+  }
+
+  Future<int> getTimeout() {
+    throw UnimplementedError("getTimeout() has not been implemented.");
+  }
+
+  Future<int> getImageQuality() {
+    throw UnimplementedError("getImageQuality() has not been implemented.");
+  }
+
+  Future<int> setFFDSecurityLevel(SecurityLevel securityLevel) {
+    throw UnimplementedError("setFFDSecurityLevel() has not been implemented.");
+  }
+
+  Future<SensorVerifyResponse> verifyFPSMatch(
+      List<int> fingerData1, List<int> fingerData2) {
+    throw UnimplementedError("verifyFPSMatch() has not been implemented.");
+  }
+
+  Future<SensorVerifyImageResponse> verifyFPS(
+      List<int> fingerData1, bool fingerDataEnabled) {
+    throw UnimplementedError("verifyFPS() has not been implemented.");
+  }
+
+  Future<FPSDeviceInfo> getFPSDeviceInfo() {
+    throw UnimplementedError("FPSDeviceInfo() has not been implemented.");
+  }
+
+  Future<SensorVerifyImageResponse> verifyFPSWithTemplate(
+      List<TemplateData> templateData, bool fingerDataEnabled) {
+    throw UnimplementedError(
+        "verifyFPSWithTemplate() has not been implemented.");
+  }
+
+  Future<int> enableFingerPositionUpdates() async {
+    throw UnimplementedError(
+        "enableFingerPositionUpdates() has not been implemented.");
+  }
+
+  Future<int> disableFingerPositionUpdates() async {
+    throw UnimplementedError(
+        "disableFingerPositionUpdates() has not been implemented.");
+  }
+
+  Stream<FingerPosition> get fingerPositionUpdates {
+    throw UnimplementedError(
+        'fingerPositionUpdates() has not been implemented.');
   }
 }

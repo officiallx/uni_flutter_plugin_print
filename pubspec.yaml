@@ -1,10 +1,11 @@
 name: uni_flutter_plugin
 description: unipos device package for printing in the thermal printer device. allows printing of receipt and images
-version: 1.0.0-2
-homepage: https://github.com/officiallx/uni_flutter_plugin_print
+version: 1.0.0-4
+repository: https://github.com/officiallx/uni_flutter_plugin_print
+homepage: https://elexmaharjan.com.np/
 
 environment:
-  sdk: '>=3.0.0-218.1.beta <4.0.0'
+  sdk: ">=2.19.2 <4.0.0"
   flutter: ">=2.5.0"
 
 dependencies:
@@ -35,7 +36,7 @@ flutter:
   plugin:
     platforms:
       android:
-        package: com.example.uni_flutter_plugin
+        package: com.evolute.uni_flutter_plugin
         pluginClass: UniFlutterPlugin
 
   # To add assets to your plugin package, add an assets section, like this:

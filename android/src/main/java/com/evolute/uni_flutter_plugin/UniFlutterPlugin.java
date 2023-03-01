@@ -1,15 +1,16 @@
-package com.example.uni_flutter_plugin;
-
-import android.os.RemoteException;
-import android.util.Log;
+package com.evolute.uni_flutter_plugin;
 
 import androidx.annotation.NonNull;
 
-import java.lang.reflect.Array;
+import com.evolute.uni_flutter_plugin.utility.SDKConstants;
+import com.evolute.uni_flutter_plugin.service.FPSService;
+import com.evolute.uni_flutter_plugin.service.PrinterService;
+
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Map;
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
+import io.flutter.plugin.common.EventChannel;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
@@ -19,25 +20,27 @@ import io.flutter.plugin.common.MethodChannel.Result;
  * UniFlutterPlugin
  */
 public class UniFlutterPlugin implements FlutterPlugin, MethodCallHandler {
-    /// The MethodChannel that will the communication between Flutter and native Android
-    ///
-    /// This local reference serves to register the plugin with the Flutter Engine and unregister it
-    /// when the Flutter Engine is detached from the Activity
     private MethodChannel channel;
+    private EventChannel fingerPositionCallbackChannel;
     private final String TAG = "UniFlutterPlugin";
     private PrinterService printerService;
+    private FPSService fpsService;
 
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
         channel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), SDKConstants.MAIN_CHANNEL_NAME);
+        fingerPositionCallbackChannel = new EventChannel(flutterPluginBinding.getBinaryMessenger(), SDKConstants.FINGER_POSITION_CALLBACK_EVENT_CHANNEL);
         channel.setMethodCallHandler(this);
         printerService = new PrinterService(flutterPluginBinding.getApplicationContext());
+        fpsService = new FPSService(flutterPluginBinding.getApplicationContext());
+        fingerPositionCallbackChannel.setStreamHandler(fpsService.fingerPositionCallbackStreamHandler);
     }
 
     @Override
     public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
 
         switch (call.method) {
+            //***************************Printer APIs Plugin Mapping***********************
             case SDKConstants.PRINTER_INIT_PRINTER: {
                 printerService.initPrinter(result);
                 break;
@@ -161,6 +164,99 @@ public class UniFlutterPlugin implements FlutterPlugin, MethodCallHandler {
                 result.success(ret);
                 break;
             }
+            //************************FPS Plugins Mapping***********************
+            case SDKConstants.FPS_INIT_FPS: {
+                fpsService.initFPS(result);
+                break;
+            }
+            case SDKConstants.FPS_CLOSE_FPS: {
+                int ret = fpsService.closeFPS();
+                result.success(ret);
+                break;
+            }
+            case SDKConstants.FPS_CAPTURE_FPS: {
+                fpsService.captureFPS(result);
+//                result.success(ret);
+                break;
+            }
+            case SDKConstants.FPS_SET_TEMPLATE: {
+                int template = call.arguments();
+                int ret = fpsService.setTemplate(template);
+                result.success(ret);
+                break;
+            }
+            case SDKConstants.FPS_GET_TEMPLATE: {
+                int ret = fpsService.getTemplate();
+                result.success(ret);
+                break;
+            }
+            case SDKConstants.FPS_SET_IMG_COMPRESSION_ALGO: {
+                int imageCompressionAlgo = call.arguments();
+                int ret = fpsService.setImgCompressionAlgo(imageCompressionAlgo);
+                result.success(ret);
+                break;
+            }
+            case SDKConstants.FPS_GET_IMG_COMPRESSION_ALGO: {
+                int ret = fpsService.getImgCompressionAlgo();
+                result.success(ret);
+                break;
+            }
+            case SDKConstants.FPS_GET_IMAGE_QUALITY: {
+                int ret = fpsService.getImageQuality();
+                result.success(ret);
+                break;
+            }
+            case SDKConstants.FPS_SET_TIMEOUT: {
+                int timeout = call.arguments();
+                int ret = fpsService.setTimeout(timeout);
+                result.success(ret);
+                break;
+            }
+            case SDKConstants.FPS_GET_TIMEOUT: {
+                int ret = fpsService.getTimeout();
+                result.success(ret);
+                break;
+            }
+            case SDKConstants.FPS_SET_FFD_SECURITY_LEVEL: {
+                int ffdLevel = call.arguments();
+                int ret = fpsService.setFFDSecurityLevel(ffdLevel);
+                result.success(ret);
+                break;
+            }
+            case SDKConstants.FPS_VERIFY_FPS_MATCH: {
+                ArrayList<Integer> fingerData1 = call.argument("finger_data_1");
+                ArrayList<Integer> fingerData2 = call.argument("finger_data_2");
+                String ret = fpsService.verifyFPSMatch(fingerData1, fingerData2);
+                result.success(ret);
+                break;
+            }
+            case SDKConstants.FPS_VERIFY_FPS: {
+                ArrayList<Integer> fingerData1 = call.argument("finger_data_1");
+                boolean fingerDataEnabled = call.argument("finger_data_enabled");
+                fpsService.verifyFPS(result, fingerData1, fingerDataEnabled);
+                break;
+            }
+            case SDKConstants.FPS_GET_FPS_DEVICE_INFO: {
+                String ret = fpsService.getFPSDeviceInfo();
+                result.success(ret);
+                break;
+            }
+            case SDKConstants.FPS_VERIFY_FPS_WITH_TEMPLATE: {
+                ArrayList<Map<String, ?>> data = call.argument("template_data_list");
+                boolean fingerDataEnabled = call.argument("finger_data_enabled");
+                fpsService.verifyFPSWithTemplate(result, data, fingerDataEnabled);
+                break;
+            }
+            case SDKConstants.FPS_ENABLE_FINGER_POSITION_UPDATES: {
+                int ret = fpsService.enableFingerPositionUpdates();
+                result.success(ret);
+                break;
+            }
+            case SDKConstants.FPS_DISABLE_FINGER_POSITION_UPDATES: {
+                int ret = fpsService.disableFingerPositionUpdates();
+                result.success(ret);
+                break;
+            }
             default: {
                 result.notImplemented();
                 break;
@@ -171,6 +267,10 @@ public class UniFlutterPlugin implements FlutterPlugin, MethodCallHandler {
     @Override
     public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
         channel.setMethodCallHandler(null);
+        fingerPositionCallbackChannel.setStreamHandler(null);
         printerService = null;
+        fpsService = null;
     }
+
+
 }

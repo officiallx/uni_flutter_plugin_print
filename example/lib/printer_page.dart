@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:uni_flutter_plugin/printer/printer_constants.dart';
 import 'package:uni_flutter_plugin/printer/uni_printer_plugin.dart';
+import 'package:uni_flutter_plugin_example/heading.dart';
 
 class PrinterPage extends StatefulWidget {
   const PrinterPage({Key? key}) : super(key: key);
@@ -28,6 +29,7 @@ class _PrinterPageState extends State<PrinterPage> {
   String imageWidthValue = "";
 
   bool enableLog = false;
+  bool isNotProcessing = true;
 
   @override
   initState() {
@@ -38,125 +40,168 @@ class _PrinterPageState extends State<PrinterPage> {
   }
 
   Future<void> initPrinter() async {
-    int ret = await uniPrinterPlugin.initPrinter();
-    setStatus("Printer : Init Status : $ret");
+    if (isNotProcessing) {
+      isNotProcessing = false;
+      int ret = await uniPrinterPlugin.initPrinter();
+      setStatus("Printer : Init Status : $ret");
+      isNotProcessing = true;
+    }
   }
 
   Future<void> printText() async {
-    String data = textController.text;
-    if (data.isNotEmpty) {
-      int ret = await uniPrinterPlugin.printText("$data\n");
-      setStatus("Printer : Print Text Status : $ret");
+    if (isNotProcessing) {
+      isNotProcessing = false;
+      String data = textController.text;
+      if (data.isNotEmpty) {
+        int ret = await uniPrinterPlugin.printText("$data\n");
+        setStatus("Printer : Print Text Status : $ret");
+      }
+      isNotProcessing = true;
     }
   }
 
   Future<void> closePrinter() async {
-    int ret = await uniPrinterPlugin.closePrinter();
-    setStatus("Printer : Close Status : $ret");
+    if (isNotProcessing) {
+      isNotProcessing = false;
+      int ret = await uniPrinterPlugin.closePrinter();
+      setStatus("Printer : Close Status : $ret");
+      isNotProcessing = true;
+    }
   }
 
   Future<void> checkPaper() async {
-    bool status = await uniPrinterPlugin.checkPaper();
-    setStatus(
-        "Printer :  Check Paper : ${status ? "Paper present" : "Paper not present"}");
+    if (isNotProcessing) {
+      isNotProcessing = false;
+      bool status = await uniPrinterPlugin.checkPaper();
+      setStatus(
+          "Printer :  Check Paper : ${status ? "Paper present" : "Paper not present"}");
+      isNotProcessing = true;
+    }
   }
 
   Future<void> printLine() async {
-    String data = lineController.text;
-    if (data.isNotEmpty) {
-      int line = int.parse(data);
-      int ret = await uniPrinterPlugin.printLine(line);
-      setStatus("Printer : Print Line : $ret");
+    if (isNotProcessing) {
+      isNotProcessing = false;
+      String data = lineController.text;
+      if (data.isNotEmpty) {
+        int line = int.parse(data);
+        int ret = await uniPrinterPlugin.printLine(line);
+        setStatus("Printer : Print Line : $ret");
+      }
+      isNotProcessing = true;
     }
   }
 
   Future<void> iGetPrinterStatus() async {
-    int ret = await uniPrinterPlugin.iGetPrinterStatus();
-    setStatus("Printer : Printer Status : $ret");
+    if (isNotProcessing) {
+      isNotProcessing = false;
+      int ret = await uniPrinterPlugin.iGetPrinterStatus();
+      setStatus("Printer : Printer Status : $ret");
+      isNotProcessing = true;
+    }
   }
 
   Future<void> printImg() async {
-    final ByteData bytes = await rootBundle.load('assets/print_logo.png');
-    final List<int> list = bytes.buffer.asInt8List();
-    int ret = await uniPrinterPlugin.printImage(list);
-    setStatus("Printer : Image Status : $ret");
+    if (isNotProcessing) {
+      isNotProcessing = false;
+      final ByteData bytes = await rootBundle.load('assets/print_logo.png');
+      final List<int> list = bytes.buffer.asInt8List();
+      int ret = await uniPrinterPlugin.printImage(list);
+      setStatus("Printer : Image Status : $ret");
+      isNotProcessing = true;
+    }
   }
 
   Future<void> printQRCode() async {
-    String data = qrCodeController.text;
-    if (data.isNotEmpty) {
-      int ret = await uniPrinterPlugin.printQRCode(data,
-          width: getImageWidth(imageWidthValue),
-          imageAlignment: getImageAlignment(imageAlignmentValue));
-      setStatus("Printer : Print QRCode : $ret");
+    if (isNotProcessing) {
+      isNotProcessing = false;
+      String data = qrCodeController.text;
+      if (data.isNotEmpty) {
+        int ret = await uniPrinterPlugin.printQRCode(data,
+            width: getImageWidth(imageWidthValue),
+            imageAlignment: getImageAlignment(imageAlignmentValue));
+        setStatus("Printer : Print QRCode : $ret");
+      }
+      isNotProcessing = true;
     }
   }
 
   Future<void> getVersion() async {
-    String ver = await uniPrinterPlugin.getVersion();
-    setStatus("Printer : Get Version : $ver");
-  }
-
-  Future<void> enableLogSDK() async {
-    int ret = await uniPrinterPlugin.setLogEnable(enableLog);
-    setStatus("Printer : Enable Log : $ret");
+    if (isNotProcessing) {
+      isNotProcessing = false;
+      String ver = await uniPrinterPlugin.getVersion();
+      setStatus("Printer : Get Version : $ver");
+      isNotProcessing = true;
+    }
   }
 
   Future<void> printReceipt() async {
-    await uniPrinterPlugin.iFlushBuffer();
-    await uniPrinterPlugin.iUpdateBufferTextAlignment(TextAlignment.Center);
-    await uniPrinterPlugin.iUpdateBufferString("PAYMENT RECEIPT\n");
-    await uniPrinterPlugin.iUpdateBufferTextAlignment(TextAlignment.Left);
-    await uniPrinterPlugin
-        .iUpdateBufferString("******************************\n");
-    await uniPrinterPlugin
-        .iUpdateBufferString("Taxable GST SR             49.95\n");
-    await uniPrinterPlugin
-        .iUpdateBufferString("GST                         5.55\n");
-    await uniPrinterPlugin
-        .iUpdateBufferString("Sub:                       55.50\n");
-    await uniPrinterPlugin
-        .iUpdateBufferString("Cash                      100.00\n");
-    await uniPrinterPlugin
-        .iUpdateBufferString("Change                     44.50\n");
-    await uniPrinterPlugin
-        .iUpdateBufferString("******************************\n");
-    await uniPrinterPlugin.iUpdateBufferString("\n");
-    await uniPrinterPlugin.iUpdateBufferString("Evolute\n");
-    await uniPrinterPlugin.iUpdateBufferTextAlignment(TextAlignment.Center);
-    await uniPrinterPlugin.iUpdateBufferString("Evolute\n");
-    await uniPrinterPlugin.iUpdateBufferTextAlignment(TextAlignment.Right);
-    await uniPrinterPlugin.iUpdateBufferString("Evolute\n");
-    await uniPrinterPlugin.iUpdateBufferString("\n");
-    await uniPrinterPlugin.iUpdateBufferString("\n");
-    await uniPrinterPlugin.iUpdateBufferString("\n");
-    await uniPrinterPlugin.iUpdateBufferString("\n");
-    int ret = await uniPrinterPlugin.iStartPrinting();
-    setStatus("Printer : Print Receipt : $ret");
+    if (isNotProcessing) {
+      isNotProcessing = false;
+      await uniPrinterPlugin.iFlushBuffer();
+      await uniPrinterPlugin.iUpdateBufferTextAlignment(TextAlignment.Center);
+      await uniPrinterPlugin.iUpdateBufferString("PAYMENT RECEIPT\n");
+      await uniPrinterPlugin.iUpdateBufferTextAlignment(TextAlignment.Left);
+      await uniPrinterPlugin
+          .iUpdateBufferString("******************************\n");
+      await uniPrinterPlugin
+          .iUpdateBufferString("Taxable GST SR             49.95\n");
+      await uniPrinterPlugin
+          .iUpdateBufferString("GST                         5.55\n");
+      await uniPrinterPlugin
+          .iUpdateBufferString("Sub:                       55.50\n");
+      await uniPrinterPlugin
+          .iUpdateBufferString("Cash                      100.00\n");
+      await uniPrinterPlugin
+          .iUpdateBufferString("Change                     44.50\n");
+      await uniPrinterPlugin
+          .iUpdateBufferString("******************************\n");
+      await uniPrinterPlugin.iUpdateBufferString("\n");
+      await uniPrinterPlugin.iUpdateBufferString("Evolute\n");
+      await uniPrinterPlugin.iUpdateBufferTextAlignment(TextAlignment.Center);
+      await uniPrinterPlugin.iUpdateBufferString("Evolute\n");
+      await uniPrinterPlugin.iUpdateBufferTextAlignment(TextAlignment.Right);
+      await uniPrinterPlugin.iUpdateBufferString("Evolute\n");
+      await uniPrinterPlugin.iUpdateBufferString("\n");
+      await uniPrinterPlugin.iUpdateBufferString("\n");
+      await uniPrinterPlugin.iUpdateBufferString("\n");
+      await uniPrinterPlugin.iUpdateBufferString("\n");
+      int ret = await uniPrinterPlugin.iStartPrinting();
+      setStatus("Printer : Print Receipt : $ret");
+      isNotProcessing = true;
+    }
   }
 
   Future<void> printRawData() async {
-    await uniPrinterPlugin.iFlushBuffer();
-    await uniPrinterPlugin.iUpdateBufferListInteger([0x1B, 0x40]);
-    await uniPrinterPlugin.iUpdateBufferListInteger([27, 97, 0X00]);
-    await uniPrinterPlugin.iUpdateBufferListInteger(
-        [0x45, 0x56, 0x4F, 0x4C, 0x55, 0x54, 0x45, 0x0A]);
-    await uniPrinterPlugin.iUpdateBufferListInteger([27, 97, 0x01]);
-    await uniPrinterPlugin.iUpdateBufferListInteger(
-        [0x45, 0x56, 0x4F, 0x4C, 0x55, 0x54, 0x45, 0x0A]);
-    await uniPrinterPlugin.iUpdateBufferListInteger([27, 97, 0x02]);
-    await uniPrinterPlugin.iUpdateBufferListInteger(
-        [0x45, 0x56, 0x4F, 0x4C, 0x55, 0x54, 0x45, 0x0A]);
-    await uniPrinterPlugin.iUpdateBufferListInteger([0x1B, 0x40]);
-    int ret = await uniPrinterPlugin.iStartPrinting();
-    setStatus("Printer : Print Raw Data : $ret");
+    if (isNotProcessing) {
+      isNotProcessing = false;
+      await uniPrinterPlugin.iFlushBuffer();
+      await uniPrinterPlugin.iUpdateBufferListInteger([0x1B, 0x40]);
+      await uniPrinterPlugin.iUpdateBufferListInteger([27, 97, 0X00]);
+      await uniPrinterPlugin.iUpdateBufferListInteger(
+          [0x45, 0x56, 0x4F, 0x4C, 0x55, 0x54, 0x45, 0x0A]);
+      await uniPrinterPlugin.iUpdateBufferListInteger([27, 97, 0x01]);
+      await uniPrinterPlugin.iUpdateBufferListInteger(
+          [0x45, 0x56, 0x4F, 0x4C, 0x55, 0x54, 0x45, 0x0A]);
+      await uniPrinterPlugin.iUpdateBufferListInteger([27, 97, 0x02]);
+      await uniPrinterPlugin.iUpdateBufferListInteger(
+          [0x45, 0x56, 0x4F, 0x4C, 0x55, 0x54, 0x45, 0x0A]);
+      await uniPrinterPlugin.iUpdateBufferListInteger([0x1B, 0x40]);
+      int ret = await uniPrinterPlugin.iStartPrinting();
+      setStatus("Printer : Print Raw Data : $ret");
+      isNotProcessing = true;
+    }
   }
 
   Future<void> setPrinterProperties() async {
-    TextAlignment textAlignment = getTextAlignment(textAlignmentValue);
-    int ret = await uniPrinterPlugin.iSetPrinterProperties(
-        FontSize.Width_x_Height_1x1, textAlignment);
-    setStatus("Printer : Set Print Properties : $ret");
+    if (isNotProcessing) {
+      isNotProcessing = false;
+      TextAlignment textAlignment = getTextAlignment(textAlignmentValue);
+      int ret = await uniPrinterPlugin.iSetPrinterProperties(
+          FontSize.Width_x_Height_1x1, textAlignment);
+      setStatus("Printer : Set Print Properties : $ret");
+      isNotProcessing = true;
+    }
   }
 
   void setStatus(String status) {
@@ -172,7 +217,7 @@ class _PrinterPageState extends State<PrinterPage> {
       home: Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: const Text('Printer example '),
+          title: const Text('Printer example'),
         ),
         body: SingleChildScrollView(
           child: Padding(
@@ -181,7 +226,7 @@ class _PrinterPageState extends State<PrinterPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                heading("Printer Status"),
+                const Heading(heading: "Printer Status"),
                 const SizedBox(
                   height: 20,
                 ),
@@ -197,7 +242,7 @@ class _PrinterPageState extends State<PrinterPage> {
                 const SizedBox(
                   height: 20,
                 ),
-                heading("Printer Options"),
+                const Heading(heading: "Printer Options"),
                 const SizedBox(
                   height: 10,
                 ),
@@ -346,19 +391,7 @@ class _PrinterPageState extends State<PrinterPage> {
                       ),
                     ),
                   ],
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                SwitchListTile(
-                    title: const Text("Enable Log"),
-                    value: enableLog,
-                    onChanged: (value) {
-                      setState(() {
-                        enableLog = value;
-                      });
-                      enableLogSDK();
-                    })
+                )
               ],
             ),
           ),
@@ -470,13 +503,6 @@ class _PrinterPageState extends State<PrinterPage> {
           ),
         )
       ],
-    );
-  }
-
-  Widget heading(String heading) {
-    return Text(
-      heading,
-      style: const TextStyle(fontWeight: FontWeight.w600),
     );
   }
 

@@ -1,4 +1,4 @@
-group 'com.example.uni_flutter_plugin'
+group 'com.evolute.uni_flutter_plugin'
 version '1.0'
 
 buildscript {
@@ -16,6 +16,7 @@ rootProject.allprojects {
     repositories {
         google()
         mavenCentral()
+        flatDir { dirs 'libs' }
     }
 }
 
@@ -31,10 +32,13 @@ android {
 
     defaultConfig {
         minSdkVersion 21
+        consumerProguardFiles 'proguard-rules.pro'
     }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation files('libs/Evolute_UniPOS_FPS_SDK_Service_01.07.00-00.aidl.jar')
+    implementation files('libs/Evolute_SDK_Service_V02.08.00-03.aidl.jar')
     implementation 'com.google.code.gson:gson:2.10'
 }

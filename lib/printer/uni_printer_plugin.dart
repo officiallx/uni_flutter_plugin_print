@@ -76,8 +76,4 @@ class UniPrinterPlugin {
   Future<int> sendRawData(List<int> data) {
     return UniFlutterPluginPlatform.instance.sendRawData(data);
   }
-
-  Future<int> setLogEnable(bool status) {
-    return UniFlutterPluginPlatform.instance.setLogEnable(status);
-  }
 }

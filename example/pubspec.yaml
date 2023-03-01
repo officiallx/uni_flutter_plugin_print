@@ -5,7 +5,7 @@ description: Demonstrates how to use the uni_flutter_plugin plugin.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 environment:
-  sdk: '>=3.0.0-157.0.dev <4.0.0'
+  sdk: ">=2.19.2 <4.0.0"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -56,6 +56,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/print_logo.png
+    - assets/evolute_logo.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
