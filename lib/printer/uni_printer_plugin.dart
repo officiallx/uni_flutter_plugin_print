@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import '../uni_flutter_plugin_platform_interface.dart';
 import 'printer_constants.dart';
 

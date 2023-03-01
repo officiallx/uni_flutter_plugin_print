@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:uni_flutter_plugin/fps/sensor_response.dart';
 import 'package:uni_flutter_plugin/printer/printer_constants.dart';
