@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:uni_flutter_plugin_example/fps_page.dart';
 import 'package:uni_flutter_plugin_example/printer_page.dart';
